@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import Card, {cardVariant} from "./components/Card";
+import UserList from "./components/UserList";
+import {IUser} from "./components/types/types";
+import axios from "axios";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+
+    const [users, setUsers] = useState<IUser[]>([])
+
+    useEffect(()=>{
+        fetchUsers()
+    }, [])
+
+    async function fetchUsers(){
+        try {
+            console.log('here')
+           const response = await axios.get<IUser[]>('https://jsonplaceholder.typicode.com/users')
+            console.log(response)
+            setUsers(response.data)
+        }catch (e){
+            alert(e)
+        }
+    }
+
+    return (
+        <div>
+            <Card width='120px' height='300px' variant={cardVariant.outlined} onClick={(num)=>{console.log('click', num)}}>
+                <button>Click</button>
+            </Card>
+            <div>
+                <UserList users={users}/>
+            </div>
+        </div>
+
+    );
+};
 
 export default App;
